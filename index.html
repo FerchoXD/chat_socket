@@ -2,63 +2,352 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Whatsapp Design using Html & CSS</title>
+<title>Whatsapp</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
 </head>
 <body>
-	<div class="container">
+
+	<!--Empieza login-->
+	<div class="login-container" id="login">
+		<div class="chat-bubble">
+		  <h1 class="LoginText">iniciar sesion</h1> 
+		<form id="login_form" class="formCreateUser">
+		<label for="username" class="labelCreateUser">Usuario:</label>
+		<input type="text" class = "InputCreateUser" id="username" placeholder="Ingresa tu nombre de usuario">
+		<button type="button" id="set-username" class="buttonCreateUser">Crear usuario</button>
+	  </form>
+	</div>
+	</div> 
+<!--Termina login-->
+
+<!--inicia buttons-->
+<div class="chat-buttons" id="chats">
+  <form class="formButtons">
+    <button type="button" onclick="grupal()"class="chat-button group-chat">
+      <img src="./images/chat_grupal muñecos blancos.jfif" alt="Icono de chat grupal">
+      Chat grupal
+    </button>
+    <button type="button" onclick="privado()"class="chat-button private-chat">
+      <img src="./images/chat_privado muñecos blancos.jfif" alt="Icono de chat privado">
+      Chat privado
+    </button>
+  </form>
+</div>
+<!--Termina buttons-->
+
+<!--Empieza chat grupal-->
+	<div  id="chat-form" class="container">
 		<div class="leftSide">
-			
 			<div class="chatlist">
-				<p>usuarios conectados</p>
+				<center><h2>usuarios conectados:</h2></center><br>
 				<div class="block active">
-					
 					<div class="details">
 						<div class="listHead">
-							<h4>Muhammad Shayan</h4>
-							
+							<div id="users-panel"></div>
 						</div>
-						
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="rightSide">
-			
-
 			<h1>chat grupal</h1>
 			<div class="chatBox">
-				
 				<div class="message my_message">
-					<p>Hi</p>
+					<ul id="messages"></ul>
 				</div>
-				
 			</div>
-			
-			
 			<div class="chatBox_input">
-				<ion-icon name="person" aria-label="Adjuntar archivo"></ion-icon>
-				<button onclick="document.getElementById('uploadImage').click()"> 
-					<ion-icon name="attach"></ion-icon>
-					
-				  </button>
-				  <ion-icon name="send" type="file" class="send_image" ></ion-icon>
-				  <input type="file" id="uploadImage" accept="image/*" style="display:none">
-				  
-				
-				<input type="text" placeholder="Type a message">
-				<ion-icon name="send" type="file">
-				<input type="text" onclick="imagen()"></input>
+				<ion-icon name="person" onclick="privado();"></ion-icon>
+				<button onclick="document.getElementById('uploadImage').click()" id="send-image" onclick="sendImage()"> 
+					<ion-icon name="attach" ></ion-icon>
+				</button>
+				<ion-icon name="send" type="file" class="send_image" ></ion-icon>
+				<input type="file" id="uploadImage" accept="image/*" style="display:none">
+				<input type="text" placeholder="Type a message" id="message">
+				<ion-icon name="send" type="button" id="send-message" style="height: 30;">
 				</ion-icon>
-
-				<ion-icon names="ios_share"></ion-icon>
-				
 		</div>
 	</div>
 
-	</script>
+	<!--termina chat grupal-->
+
+	<!--Empieza chat privado-->
+	<div  class="container">
+		<div class="leftSide">
+			
+			<div class="chatlist">
+				<center><h2>usuarios conectados:</h2></center><br>
+				<div class="block details">
+					
+					<div class="details">
+						<div class="listHead">
+							<div id="users-panel"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="rightSide">
+			<h1>chat privado</h1>
+			<div class="chatBox">
+				<div class="message my_message">
+					<ul id="messages"></ul>
+				</div>
+			</div>
+			<div class="chatBox_input">
+				<ion-icon name="person"></ion-icon>
+				<button onclick="document.getElementById('uploadImage').click()"> 
+					<ion-icon name="attach"></ion-icon>
+				</button>
+				<input type="file" id="uploadImage" accept="image/*" style="display:none">
+				<ion-icon name="send" type="file" id="send-imageP" onclick="sendImagePrivate();"></ion-icon>
+				<input type="text" placeholder="Type a message">
+                <input type="text" placeholder="nombre de usuario">
+				<ion-icon name="send" type="file"></ion-icon>
+		</div>
+	</div>
+	<!--Termina chat privado-->
+	<script>
+		var socket = io();
+		var usernameInput = document.getElementById('username');
+		var messageInput = document.getElementById('message');
+		var messageInputP = document.getElementById('messageP');
+		var imageInput = document.getElementById('image');
+		var messagesList = document.getElementById('messages');
+		var users = [];
+	
+		function addMessage(msg) {
+		  var li = document.createElement('label');
+		  li.textContent = msg;
+		  messagesList.appendChild(li);
+		}
+	
+		function addImage(data, username) {
+		  var li = document.createElement('li');
+		  var img = document.createElement('img');
+		  var usernameNode = document.createElement('span');
+		  usernameNode.textContent = username + ':';
+		  img.src = data;
+		  li.appendChild(usernameNode);
+		  li.appendChild(img);
+		  messagesList.appendChild(li);
+		}
+	
+		function addImagePrivate(data, username) {
+		  var li = document.createElement('li');
+		  var img = document.createElement('img');
+		  var usernameNode = document.createElement('span');
+		  usernameNode.textContent = username + ':';
+		  img.src = data;
+		  li.appendChild(usernameNode);
+		  li.appendChild(img);
+		  messagesList.appendChild(li);
+		}
+	
+		function setUsername() {
+	
+		  var username = usernameInput.value.trim();
+		  if (username === '') {
+			alert('Por favor ingrese un nombre de usuario');
+			return;
+		  }
+	
+		  // Enviar solicitud para comprobar si el nombre de usuario ya existe en el servidor
+		  socket.emit('check username', username, function (usernameExists) {
+			if (usernameExists) {
+			  alert('El nombre de usuario ya existe. Por favor ingrese otro.');
+			  return;
+			}
+	
+			// Agregar el nuevo usuario a la lista en el servidor
+			socket.emit('add user', username, function (success) {
+			  console.log("hi perro: " + success);
+			  console.log('el yusername: ' +username)
+			  if (!success) {
+				alert('No se pudo agregar el usuario en este momento. Por favor inténtelo de nuevo más tarde.');
+				return;
+			  }
+	
+			  socket.emit('set username', username);
+			  alert('Usuario creado: ' + username);
+	
+	
+			  document.getElementById('cy').style.display = "none";
+			  document.getElementById('chats').style.display = "block";
+			  document.getElementById('chat-form').style.display = "none";
+			  document.getElementById('chat-privado').style.display = "none";
+			  // Actualizar el HTML con el nombre de usuario
+			  var usernameDisplay = document.createElement('label');
+			  let leyenda = "tu nombre de usuario es";
+			  let nombreUser = usernameDisplay.textContent = '"' + leyenda + '": ' + username;
+			  document.getElementById("mensaje-container").innerHTML = nombreUser;
+			});
+		  });
+		}
+	
+		
+	
+		function sendMessage() {
+		  var message = messageInput.value.trim();
+		  var username = usernameInput.value.trim();
+		  if (message && username) {
+			socket.emit('chat message', username + ': ' + message);
+			messageInput.value = '';
+		  }
+		}
+	
+		function sendMessagePrivate() {
+		  let receptor = document.getElementById('receptor').value.trim();
+		  let message = messageInputP.value.trim();
+		  console.log(receptor);
+		  console.log(message);
+		  socket.emit('messagePrivate', { receptor: receptor, message: message })
+		}
+	
+		function sendImage() {
+		  console.log("entro a imagen"); 
+		  var fileInput = document.getElementById('image'); // Obtiene el elemento de entrada de archivo con un ID de "image"
+		  var file = fileInput.files[0]; // Recupera el archivo seleccionado del elemento de entrada de archivo
+		  console.log(file); 
+		  var reader = new FileReader(); // Crea un nuevo objeto FileReader para leer el contenido del archivo
+		  reader.onload = function () { // Define una función que se ejecutará cuando se complete la lectura del archivo
+			var img = new Image(); // Crea un nuevo objeto de imagen
+			img.src = reader.result; // Establece la fuente de la imagen como los datos leídos del archivo
+			img.onload = function () { // Define una función que se ejecutará cuando la imagen se haya cargado completamente
+			  var canvas = document.createElement('canvas'); // Crea un nuevo elemento de lienzo
+			  var ctx = canvas.getContext('2d'); // Obtiene el contexto de dibujo 2D del lienzo
+			  socket.emit('chat image', { username: usernameInput.value.trim(), data: data }); // Envía los datos de imagen a través de la conexión de socket
+			};
+		  };
+		  reader.readAsDataURL(file); // Comienza a leer el contenido del archivo como una URL de datos codificada en Base64
+		}
+	
+		function sendImagePrivate() {
+		  let receptor = document.getElementById('receptor').value.trim();
+		  console.log("entro a imagen");
+		  var fileInput = document.getElementById('imageP');
+		  var file = fileInput.files[0];
+		  console.log(file);
+		  var reader = new FileReader();
+		  reader.readAsDataURL(file);
+		  reader.onloadend = function () {
+			var base64 = reader.result;
+			console.log(base64);
+			socket.emit('chat imagePrivate', {
+			  img: base64,
+			  receptor: receptor,
+			});
+		  };
+		}
+	
+		function sendPrivate() {
+		  var reader = new FileReader();
+		  reader.readAsDataURL(archivo);
+		  reader.onloadend = function () {
+			var base64 = reader.result;
+			socket.emit("send file private", {
+			  img: base64,
+			  receptor: $messageBox.val(),
+			});
+		  };
+		}
+	
+	
+		/*var file = event.target.files[0];
+		  var reader = new FileReader();
+		  reader.onload = function() {
+			var img = new Image();
+			img.src = reader.result;
+			img.onload = function() {
+			  var canvas = document.createElement('canvas');
+			  var ctx = canvas.getContext('2d');
+			  canvas.width = 500;
+			  canvas.height = 500;
+			  ctx.drawImage(img, 0, 0, 500, 500);
+			  var data = canvas.toDataURL('image/jpeg', 0.5); // convertimos a JPEG para reducir el tamaño de la imagen
+			  socket.emit('chat image', { username: usernameInput.value.trim(), data: data });
+			};
+		  };
+		  reader.readAsDataURL(file);*/
+	
+		socket.on('connect', function () {
+		  //addMessage('Conectado al servidor');
+		});
+	
+		socket.on('disconnect', function () {
+		  //addMessage('Desconectado del servidor');
+		});
+	
+		socket.on('newMessagePrivate', (data) => {
+		  let li = document.createElement('li');
+		  li.textContent = `${data.emisor}: ${data.message}`;
+		  messagesList.appendChild(li);
+		})
+		socket.on('chat message', function (msg) {
+		  addMessage(msg);
+		});
+	
+		socket.on('chat image', function (data) {
+		  addImage(data.data, data.username);
+		  //addImagePrivate(data.data, data.username ,data.receptor);
+		});
+	
+		socket.on('users',function (data){
+		  console.log('soy ese pe we')
+		  console.log(data);
+		  let html = '';
+		  for (const element of data) {
+		  html = html  + `<label>${element}</label><br>`
+		  
+		  }
+		  document.getElementById('users-panel').innerHTML= html;
+	
+		  /*
+		  for (const element of data) {
+			console.log(element)
+			const user = document.createElement('label');
+			document.getElementById('users-panel').appendChild(user);
+			user.innerText = element;
+		  }*/
+		  
+	
+		})
+		
+		socket.on('chat imagePrivate', function (file) {
+		  // Obtener el elemento contenedor donde se agregará la imagen
+		  const contenedor = document.getElementById("messages");
+		  // La cadena base64 de la imagen
+		  const imagenBase64 = file.img;
+	
+		  // Crear una etiqueta img
+		  const imagen = document.createElement("img");
+	
+		  // Decodificar la imagen base64 y establecerla como el valor del atributo src
+		  imagen.src = imagenBase64;
+	
+		  // Agregar la imagen al contenedor
+		  contenedor.appendChild(imagen);
+		});
+	
+		document.getElementById('set-username').addEventListener('click', setUsername);
+		document.getElementById('send-message').addEventListener('click', sendMessage);
+		var image = document.getElementById('send-image').files[0];
+	
+		function grupal() {
+		  document.getElementById('login').style.display = "none";
+		  document.getElementById('chats').style.display = "none";
+		  document.getElementById('chat-privado').style.display = "none";
+		  document.getElementById('chat-form').style.display = "block";
+		}
+	
+		function privado() {
+		  document.getElementById('chats').style.display = "none";
+		  document.getElementById('chat-form').style.display = "none";
+		  document.getElementById('chat-privado').style.display = "block";
+		}
+	  </script>
 	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>

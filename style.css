@@ -14,6 +14,130 @@ body
 	min-height: 100vh;
 	background: linear-gradient(#009688 0%,#009688 130px,#d9dbd5 130px,#d9dbd5 100%);
 }
+
+#chats{
+	display: none;
+  }
+  
+  #chat-form{
+	display: none;
+  }
+  
+  #chat-privado{
+	display: none;
+  }
+  
+  body{
+	margin: 0;
+  }
+  
+  /*comienza login*/
+  .login-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+  }
+  
+  .chat-bubble {
+	background-color: #1abc9c;
+	border-radius: 30px;
+	color: #fff;
+	font-family: Arial, sans-serif;
+	font-size: 18px;
+	padding: 20px;
+	position: relative;
+	max-width: 500px;
+	width: 100%;
+  }
+  
+  .LoginText {
+	margin-top: 0;
+  }
+  
+  .formCreateUser {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-top: 20px;
+  }
+  
+  .labelCreateUser {
+	font-weight: bold;
+  }
+  
+  .InputCreateUser{
+	border-radius: 5px;
+	border: none;
+	outline: #1abc9c;
+	height: 30px;
+	padding: 5px;
+  }
+  
+  .buttonCreateUser {
+	background-color: #fff;
+	border: none;
+	border-radius: 5px;
+	color: #1abc9c;
+	cursor: pointer;
+	font-weight: bold;
+	height: 40px;
+	margin-top: 20px;
+	transition: all 0.3s ease;
+	width: 100%;
+  }
+  
+  .buttonCreateUser:hover {
+	background-color: #1abc9c;
+	color: #fff;
+  }
+  
+  /*comienza css botones*/
+  
+  .chat-buttons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 40vh;
+	margin-top: 300px;
+  }
+  
+  .formButtons {
+	margin-top: 300px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+  
+  .chat-button {
+	background-color: #1abc9c;
+	border: none;
+	border-radius: 5px;
+	color: #fff;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	font-size: 18px;
+	font-weight: bold;
+	padding: 10px;
+	transition: all 0.3s ease;
+	width: 200px;
+	margin-right: 10px;
+	flex-direction: column;
+  }
+  
+  .chat-button:hover {
+	background-color: #148c7d;
+  }
+  
+  .private-chat img,
+  .group-chat img {
+	height: 60px;
+	margin-bottom: 10px;
+	width: 60px;
+  }
+  
+
 .container
 {
 	position: relative;
@@ -155,7 +279,7 @@ body
 }
 .chatlist .block:hover
 {
-	background: #f5f5f5
+	background: #dfdede
 }
 .chatlist .block .imgbx
 {
